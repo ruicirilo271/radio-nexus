@@ -1,0 +1,24 @@
+# --- Core Flask Web App ---
+Flask==3.0.3
+Werkzeug==3.0.2
+Jinja2==3.1.4
+itsdangerous==2.2.0
+
+# --- Requests e Parsing ---
+requests==2.32.3
+beautifulsoup4==4.12.3
+lxml==5.3.0
+
+# --- Timezone e Datas ---
+pytz==2024.1
+
+# --- Servidor local / Deploy ---
+gunicorn==23.0.0
+
+# --- Scraping adicional (para futura integração) ---
+html5lib==1.1
+
+# --- Somente se fores usar Playwright (não obrigatório) ---
+# playwright==1.48.0
+# ou Selenium se quiseres scraping com browser real:
+# selenium==4.25.0

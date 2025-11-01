@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🗓️ Grelha - Rádio Nexus</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="grelha-body">
+  <!-- 🔹 TOPO -->
+  <div class="topbar">
+    <div class="brand">
+      <span class="logo">Rádio Nexus</span>
+      <span class="onair"><span class="dot"></span> ON AIR</span>
+    </div>
+    <div class="right">
+      <div id="datetime">—</div>
+      <a href="/" class="grelha-link">▶ Voltar à Emissão</a>
+    </div>
+  </div>
+
+  <!-- 🔹 CONTEÚDO -->
+  <div class="grelha-container">
+    <h1>🗓️ Grelha de Programação</h1>
+    <p>Notícias, entrevistas e desporto 24 horas por dia</p>
+
+    <div class="programas-lista">
+      {% for p in programas %}
+      <div class="programa-card {% if hora_atual >= p.inicio and hora_atual < p.fim %}ativo{% endif %}">
+        <h2>{{ '%02d'|format(p.inicio) }}h → {{ '%02d'|format(p.fim) }}h</h2>
+        <h3>{{ p.nome }}</h3>
+        <p>{{ p.descricao }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script>
+    const dt = document.getElementById('datetime');
+    function tick() {
+      const agora = new Date();
+      const dias = ["Domingo","Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado"];
+      dt.textContent = `${dias[agora.getDay()]}, ${agora.toLocaleDateString("pt-PT",{day:"2-digit",month:"long",year:"numeric"})} — ${agora.toLocaleTimeString("pt-PT",{hour12:false})}`;
+    }
+    setInterval(tick, 1000); tick();
+  </script>
+</body>
+</html>
+
+
+

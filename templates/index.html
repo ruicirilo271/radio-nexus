@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎧 Rádio Nexus</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+  <!-- 🔹 TOPO -->
+  <div class="topbar">
+    <div class="brand">
+      <span class="logo">Rádio Nexus</span>
+      <span class="onair"><span class="dot"></span> ON AIR</span>
+    </div>
+    
+    <div class="right">
+  <div id="datetime">—</div>
+  <div id="weather" class="weather">🌤️ Lisboa • — °C</div>
+  <a href="/grelha" class="grelha-link">📅 Ver Grelha</a>
+</div>
+
+  </div>
+
+  <!-- 🔹 CONTEÚDO -->
+  <div class="container">
+    <h1>🎙 Rádio Nexus</h1>
+    <p class="subtitulo">Notícias • Entrevistas • Desporto 24 h</p>
+
+    <div class="programa">
+      <h2 id="progNome">—</h2>
+      <p id="progDesc">—</p>
+      <p id="proximoTxt" class="proximo">—</p>
+    </div>
+
+    <canvas id="equalizer"></canvas>
+
+    <div class="controls">
+      <button id="autoBtn" class="btn active">
+        <span class="led"></span> 🔄 Modo Automático
+      </button>
+    </div>
+  </div>
+
+  <!-- 🔹 PAINEL DE LOGS -->
+  <div id="logPanel" class="log-panel">
+    <div class="log-title">
+      📡 Rádio Nexus — Log de Programação
+      <button id="toggleLogs" class="toggle-logs">✖ Ocultar Logs</button>
+    </div>
+    <div id="logContent"></div>
+  </div>
+
+   <button id="showLogsBtn" class="show-logs">📋 Mostrar Logs</button>
+
+  <!-- 🔹 PLAYER -->
+  <footer>
+    <audio id="player" controls autoplay crossorigin="anonymous"></audio>
+  </footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+
+
+
+
