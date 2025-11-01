@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const ctx = canvas.getContext("2d");
   const logContent = document.getElementById("logContent");
   const toggleLogs = document.getElementById("toggleLogs");
+  const showLogsBtn = document.getElementById("showLogsBtn");
+  const weatherEl = document.getElementById("weather");
 
   let autoMode = true;
   let intervalId = null;
@@ -28,14 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   setInterval(atualizarDataHora,1000);
   atualizarDataHora();
-    /* ==================== METEOROLOGIA LISBOA ==================== */
-    /* ==================== METEOROLOGIA LISBOA ==================== */
-  const weatherEl = document.getElementById("weather");
-  // "Acorda" o servidor Vercel após load inicial
- setTimeout(() => {
-  fetch("/programa_atual").then(() => console.log("🌐 Backend Vercel ativo"));
- }, 3000);
 
+  /* ==================== METEOROLOGIA LISBOA ==================== */
   async function atualizarTempo() {
     try {
       const resp = await fetch("https://api.open-meteo.com/v1/forecast?latitude=38.72&longitude=-9.14&current=temperature_2m,weather_code,is_day&timezone=Europe/Lisbon");
@@ -43,39 +39,34 @@ document.addEventListener("DOMContentLoaded", () => {
       const temp = data.current?.temperature_2m;
       const codigo = data.current?.weather_code;
       const isDay = data.current?.is_day;
-
       if (temp === undefined || codigo === undefined) return;
 
       let icone = "☀️";
-
-      // Mapeamento simplificado dos códigos meteorológicos Open-Meteo
-      if ([0, 1].includes(codigo)) icone = isDay ? "☀️" : "🌙";               // céu limpo
-      else if ([2, 3].includes(codigo)) icone = isDay ? "🌤️" : "☁️";        // nublado parcial
-      else if ([45, 48].includes(codigo)) icone = "🌫️";                      // nevoeiro
-      else if ([51, 53, 55, 56, 57].includes(codigo)) icone = "🌦️";         // chuviscos
-      else if ([61, 63, 65, 66, 67].includes(codigo)) icone = "🌧️";         // chuva
-      else if ([71, 73, 75, 77].includes(codigo)) icone = "❄️";              // neve
-      else if ([80, 81, 82].includes(codigo)) icone = "🌦️";                 // aguaceiros
-      else if ([95, 96, 99].includes(codigo)) icone = "⛈️";                  // trovoadas
-
+      if ([0, 1].includes(codigo)) icone = isDay ? "☀️" : "🌙";
+      else if ([2, 3].includes(codigo)) icone = isDay ? "🌤️" : "☁️";
+      else if ([45, 48].includes(codigo)) icone = "🌫️";
+      else if ([51, 53, 55, 56, 57].includes(codigo)) icone = "🌦️";
+      else if ([61, 63, 65, 66, 67].includes(codigo)) icone = "🌧️";
+      else if ([71, 73, 75, 77].includes(codigo)) icone = "❄️";
+      else if ([80, 81, 82].includes(codigo)) icone = "🌦️";
+      else if ([95, 96, 99].includes(codigo)) icone = "⛈️";
       weatherEl.textContent = `${icone} Lisboa • ${temp.toFixed(1)} °C`;
     } catch (err) {
       console.warn("Falha ao obter temperatura:", err);
+      weatherEl.textContent = "🌤️ Lisboa • — °C";
     }
   }
-
   atualizarTempo();
-  setInterval(atualizarTempo, 15 * 60 * 1000); // a cada 15 minutos
-
+  setInterval(atualizarTempo, 15 * 60 * 1000);
 
   /* ==================== LOGS ==================== */
-  function logMensagem(msg, tipo="info") {
+  function logMensagem(msg, tipo = "info") {
     const agora = new Date().toLocaleTimeString("pt-PT",{hour12:false});
     const linha = document.createElement("div");
     linha.className = `log-line ${tipo}`;
     linha.textContent = `[${agora}] ${msg}`;
     logContent.prepend(linha);
-    if (logContent.childElementCount > 10) logContent.lastChild.remove();
+    if (logContent.childElementCount > 25) logContent.lastChild.remove();
     console.log(msg);
   }
 
@@ -107,9 +98,9 @@ document.addEventListener("DOMContentLoaded", () => {
           const barHeight = smoothArray[i] * 1.2;
           const x = i * barWidth;
           const y = h - barHeight;
-          const color = `hsl(${(hue + i * 4) % 360}, 100%, 50%)`;
+          const color = `hsl(${(hue + i * 4) % 360}, 100%, 55%)`;
           ctx.fillStyle = color;
-          ctx.shadowBlur = 15;
+          ctx.shadowBlur = 16;
           ctx.shadowColor = color;
           ctx.fillRect(x, y, barWidth - 1.5, barHeight);
         }
@@ -150,6 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
         player.src = url;
         await player.play();
       }
+      player.muted = false;
     } catch (err) {
       console.error("Erro ao tocar stream:", err);
       logMensagem("⚠️ Erro ao carregar stream — tentativa de reconexão...", "warn");
@@ -192,25 +184,21 @@ document.addEventListener("DOMContentLoaded", () => {
     intervalId = setInterval(atualizarPrograma, 60_000);
   };
 
-  /* ==================== PAINEL DE LOGS (OCULTAR / MOSTRAR) ==================== */
+  /* ==================== PAINEL DE LOGS ==================== */
   if (toggleLogs) {
     toggleLogs.addEventListener("click", () => {
       const painel = document.getElementById("logPanel");
-      const showBtn = document.getElementById("showLogsBtn");
       painel.classList.toggle("hidden");
-
       if (painel.classList.contains("hidden")) {
         toggleLogs.textContent = "📋 Mostrar Logs";
-        showBtn.style.display = "block";
+        showLogsBtn.style.display = "block";
       } else {
         toggleLogs.textContent = "✖ Ocultar Logs";
-        showBtn.style.display = "none";
+        showLogsBtn.style.display = "none";
       }
     });
   }
 
-  // Botão flutuante “Mostrar Logs”
-  const showLogsBtn = document.getElementById("showLogsBtn");
   if (showLogsBtn) {
     showLogsBtn.addEventListener("click", () => {
       const painel = document.getElementById("logPanel");
@@ -219,7 +207,31 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ==================== INÍCIO ==================== */
-  logMensagem("🚀 Rádio Nexus iniciada. A monitorizar programação...");
-  atualizarPrograma();
+  /* ==================== ARRANQUE AUTOMÁTICO (Vercel + Autoplay) ==================== */
+  async function iniciarRadio() {
+    logMensagem("🚀 Rádio Nexus inicializada. A preparar emissão...");
+
+    // Acordar servidor Vercel (cold start fix)
+    try {
+      await fetch("/programa_atual");
+      logMensagem("🌐 Servidor Vercel acordado com sucesso!");
+    } catch {
+      logMensagem("⚠️ Falha ao acordar backend, nova tentativa em 3s...");
+      setTimeout(() => fetch("/programa_atual"), 3000);
+    }
+
+    // Reativar contexto de áudio (user interaction fix)
+    document.body.addEventListener("click", async () => {
+      if (audioCtx && audioCtx.state === "suspended") {
+        await audioCtx.resume();
+        logMensagem("🎧 Contexto de áudio reativado.");
+      }
+    }, { once: true });
+
+    // Iniciar programação e ciclo
+    await atualizarPrograma();
+    intervalId = setInterval(atualizarPrograma, 60_000);
+  }
+
+  iniciarRadio();
 });
