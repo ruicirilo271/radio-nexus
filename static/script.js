@@ -31,6 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ==================== METEOROLOGIA LISBOA ==================== */
     /* ==================== METEOROLOGIA LISBOA ==================== */
   const weatherEl = document.getElementById("weather");
+  // "Acorda" o servidor Vercel após load inicial
+ setTimeout(() => {
+  fetch("/programa_atual").then(() => console.log("🌐 Backend Vercel ativo"));
+ }, 3000);
 
   async function atualizarTempo() {
     try {
